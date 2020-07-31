@@ -9,8 +9,8 @@ import (
 	i18n "github.com/gobuffalo/mw-i18n"
 	paramlogger "github.com/gobuffalo/mw-paramlogger"
 	"github.com/gobuffalo/packr/v2"
-	"github.com/unrolled/secure"
 
+	"github.com/unrolled/secure"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 
@@ -31,7 +31,7 @@ func App() *buffalo.App {
 		app = buffalo.New(buffalo.Options{
 			Env:         ENV,
 			SessionName: "_vue_session",
-			SessionStore: CustomCookieStore([]byte("some session secret")),
+			SessionStore: CustomCookieStore([]byte("fzdiotplatform")),
 		})
 
 		// Automatically redirect to SSL
@@ -62,29 +62,29 @@ func App() *buffalo.App {
 
 		app.ServeFiles("/assets", assetsBox)
 
-		// api := app.Group("/api")
-		// band := api.Resource("/bands", BandsResource{&buffalo.BaseResource{}})
-		// band.Resource("/members", MembersResource{&buffalo.BaseResource{}})
+		api := app.Group("/api")
+		band := api.Resource("/bands", BandsResource{&buffalo.BaseResource{}})
+		band.Resource("/members", MembersResource{&buffalo.BaseResource{}})
 
 		// app.GET("/{path:.+}", HomeHandler)
 		app.GET("/", HomeHandler)
 		//AuthMiddlewares
-		// app.Use(SetCurrentUser)
-		// app.Use(Authorize)
+		app.Use(SetCurrentUser)
+		app.Use(Authorize)
 
-		//Routes for Auth
-		// auth := app.Group("/auth")
-		// auth.GET("/", AuthLanding)
-		// auth.GET("/new", AuthNew)
-		// auth.POST("/new", AuthCreate)
-		// auth.DELETE("/", AuthDestroy)
-		// auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate)
+		// Routes for Auth
+		auth := app.Group("/auth")
+		auth.GET("/", AuthLanding)
+		auth.GET("/new", AuthNew)
+		auth.POST("/new", AuthCreate)
+		auth.DELETE("/", AuthDestroy)
+		auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate)
 
-		//Routes for User registration
-		// users := app.Group("/users")
-		// users.GET("/new", UsersNew)
-		// users.POST("/", UsersCreate)
-		// users.Middleware.Remove(Authorize)
+		// Routes for User registration
+		users := app.Group("/users")
+		users.GET("/new", UsersNew)
+		users.POST("/", UsersCreate)
+		users.Middleware.Remove(Authorize)
 	}
 
 	return app
