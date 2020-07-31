@@ -5,8 +5,8 @@
     "jquery-ujs": "~1.2.2",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
-    "vue-template-compiler": "^2.6.11"
-    "w2ui": "^1.4.3",
+    "vue-template-compiler": "^2.6.11",
+    "w2ui": "^1.4.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",

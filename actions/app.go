@@ -61,7 +61,7 @@ func App() *buffalo.App {
 		band := api.Resource("/bands", BandsResource{&buffalo.BaseResource{}})
 		band.Resource("/members", MembersResource{&buffalo.BaseResource{}})
 
-		// app.GET("/{path:.+}", HomeHandler)
+		app.GET("/{path:.+}", HomeHandler)
 		app.GET("/", HomeHandler)
 		//AuthMiddlewares
 		app.Use(SetCurrentUser)
@@ -71,7 +71,7 @@ func App() *buffalo.App {
 		auth := app.Group("/auth")
 		auth.GET("/", AuthLanding)
 		auth.GET("/new", AuthNew)
-		auth.POST("/", AuthCreate)
+		auth.POST("/new", AuthCreate)
 		auth.DELETE("/", AuthDestroy)
 		auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate)
 
@@ -80,7 +80,6 @@ func App() *buffalo.App {
 		users.GET("/new", UsersNew)
 		users.POST("/", UsersCreate)
 		users.Middleware.Remove(Authorize)
-
 	}
 
 	return app

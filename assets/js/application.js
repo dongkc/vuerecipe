@@ -1,5 +1,6 @@
 require("expose-loader?$!expose-loader?jQuery!jquery");
 require("bootstrap-sass/assets/javascripts/bootstrap.js");
+require("w2ui/w2ui.js");
 
 import Vue from "vue";
 import VueRouter from "router";
