@@ -11,6 +11,7 @@ import (
 	"github.com/gobuffalo/vuerecipe/models"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/gorilla/sessions"
 )
 
 // AuthLanding shows a landing page to login
@@ -60,7 +61,16 @@ func AuthCreate(c buffalo.Context) error {
 	if err != nil {
 		return bad()
 	}
+
+	ses := c.Session()
+	ses.Session.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   0,
+		HttpOnly: true,
+	}
+
 	c.Session().Set("current_user_id", u.ID)
+
 	c.Flash().Add("success", "Welcome Back to Buffalo!")
 
 	redirectURL := "/"

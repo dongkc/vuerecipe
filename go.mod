@@ -20,6 +20,8 @@ require (
 	github.com/gobuffalo/suite v2.8.1+incompatible
 	github.com/gobuffalo/validate v2.0.4+incompatible
 	github.com/gofrs/uuid v3.2.0+incompatible
+	github.com/gorilla/securecookie v1.1.1
+	github.com/gorilla/sessions v1.2.0
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/markbates/grift v1.5.0
 	github.com/pkg/errors v0.9.1

@@ -11,6 +11,9 @@ import (
 	"github.com/gobuffalo/packr/v2"
 	"github.com/unrolled/secure"
 
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
+
 	"github.com/gobuffalo/vuerecipe/models"
 )
 
@@ -27,8 +30,10 @@ func App() *buffalo.App {
 	if app == nil {
 		app = buffalo.New(buffalo.Options{
 			Env:         ENV,
-			SessionName: "_vuerecipe_session",
+			SessionName: "_vue_session",
+			SessionStore: CustomCookieStore([]byte("some session secret")),
 		})
+
 		// Automatically redirect to SSL
 		app.Use(forcessl.Middleware(secure.Options{
 			SSLRedirect:     ENV == "production",
@@ -57,30 +62,44 @@ func App() *buffalo.App {
 
 		app.ServeFiles("/assets", assetsBox)
 
-		api := app.Group("/api")
-		band := api.Resource("/bands", BandsResource{&buffalo.BaseResource{}})
-		band.Resource("/members", MembersResource{&buffalo.BaseResource{}})
+		// api := app.Group("/api")
+		// band := api.Resource("/bands", BandsResource{&buffalo.BaseResource{}})
+		// band.Resource("/members", MembersResource{&buffalo.BaseResource{}})
 
-		app.GET("/{path:.+}", HomeHandler)
+		// app.GET("/{path:.+}", HomeHandler)
 		app.GET("/", HomeHandler)
 		//AuthMiddlewares
-		app.Use(SetCurrentUser)
-		app.Use(Authorize)
+		// app.Use(SetCurrentUser)
+		// app.Use(Authorize)
 
 		//Routes for Auth
-		auth := app.Group("/auth")
-		auth.GET("/", AuthLanding)
-		auth.GET("/new", AuthNew)
-		auth.POST("/new", AuthCreate)
-		auth.DELETE("/", AuthDestroy)
-		auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate)
+		// auth := app.Group("/auth")
+		// auth.GET("/", AuthLanding)
+		// auth.GET("/new", AuthNew)
+		// auth.POST("/new", AuthCreate)
+		// auth.DELETE("/", AuthDestroy)
+		// auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate)
 
 		//Routes for User registration
-		users := app.Group("/users")
-		users.GET("/new", UsersNew)
-		users.POST("/", UsersCreate)
-		users.Middleware.Remove(Authorize)
+		// users := app.Group("/users")
+		// users.GET("/new", UsersNew)
+		// users.POST("/", UsersCreate)
+		// users.Middleware.Remove(Authorize)
 	}
 
 	return app
+}
+
+// 设置cookie默认到关闭浏览器
+func CustomCookieStore(keyPairs ...[]byte) *sessions.CookieStore {
+	cs := &sessions.CookieStore{
+		Codecs: securecookie.CodecsFromPairs(keyPairs...),
+		Options: &sessions.Options{
+			Path:   "/",
+			MaxAge: 0,
+		},
+	}
+
+	cs.MaxAge(cs.Options.MaxAge)
+	return cs
 }
