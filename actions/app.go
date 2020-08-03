@@ -63,7 +63,6 @@ func App() *buffalo.App {
 		band := api.Resource("/bands", BandsResource{&buffalo.BaseResource{}})
 		band.Resource("/members", MembersResource{&buffalo.BaseResource{}})
 
-		// app.GET("/{path:.+}", HomeHandler)
 		app.GET("/", HomeHandler)
 		//AuthMiddlewares
 		app.Use(SetCurrentUser)
@@ -82,6 +81,9 @@ func App() *buffalo.App {
 		users.GET("/new", UsersNew)
 		users.POST("/", UsersCreate)
 		users.Middleware.Remove(Authorize)
+
+		// 匹配其他路径
+		app.GET("/{path:.+}", HomeHandler)
 	}
 
 	return app
